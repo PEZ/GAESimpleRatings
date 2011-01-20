@@ -11,6 +11,8 @@ dsa_priv.pem
 *.perspective
 *.perspectivev3
 *.pbxuser
+
+# Python compiled files
 *.pyc
 *.pyo
 
@@ -35,3 +37,6 @@ CVS
 Backup[ ]of[ ]*.pages/
 Backup[ ]of[ ]*.key/
 Backup[ ]of[ ]*.numbers/
+
+#app.yaml for this project needs "manual" tracking
+app.yaml
