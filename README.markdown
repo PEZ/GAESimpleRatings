@@ -1,0 +1,3 @@
+Simple (possibly so simple as to be useless for the real world) tag based ratings.
+
+Howto to be written...

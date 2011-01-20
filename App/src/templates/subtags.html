@@ -1,0 +1,10 @@
+  <h2>Sub tags for: {{tags|escape}}</h2>
+  <ul>
+  {% for tag in sub_tags %}
+	<li>{{tag.tag|escape}}</li>
+  {% endfor %}
+  </ul>
+  <form method="post">
+    <input type="text" name="tag" placeholder="Sub tag" />
+    <input type="submit" value="Create" />
+  </form>
