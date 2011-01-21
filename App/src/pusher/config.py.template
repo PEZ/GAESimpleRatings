@@ -1,0 +1,8 @@
+'''
+Created on Jan 20, 2011
+
+@author: cobpez
+'''
+APP_ID = "<app_id>"
+APP_SECRET = "<app_secret>"
+SERVER_URL = "https://pusher.projectplace.com:8888"

@@ -51,32 +51,12 @@ class RaterRating(db.Model):
         for tag in tags:
             ratings_query.filter('tags =', tag)
         return [rating.rating for rating in ratings_query]
-        
-
-class RatingIntervalIndex(db.Model):
-    created_at   = db.DateTimeProperty(auto_now_add=True)
-    tags         = db.StringListProperty(default=[])
     
     @classmethod
-    def construct(cls, rating_interval, tags):
-        return cls(tags=tags, parent=rating_interval)
-
-class RatingInterval(polymodel.PolyModel):
-    rating  = db.RatingProperty()
-    when   = db.DateTimeProperty(required=True)
-    
-    @classmethod
-    def create(cls, rating, when, tags):
-        rating_interval = cls(rating=rating, when=when)
-        rating_interval.put()
-        index = RatingIntervalIndex.construct(tags=tags)
-        db.put(index)
-        return rating_interval
-    
-    @classmethod
-    def index_for_tags(cls, tags):
-        query = RatingIntervalIndex.all(keys_only=True)
-        for tag in tags:
-            query.filter('tags=', tag)
-        return query
+    def average_rating_for_tags(cls, tags, days=7):
+        ratings = cls.ratings_for_tags(int(days), tags)
+        average = 0
+        if ratings:
+            average = float(sum(ratings)) / len(ratings)
+        return average
 

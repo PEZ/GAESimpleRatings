@@ -32,3 +32,39 @@ indexes:
   - name: tags
   - name: tags
   - name: modified_at
+
+- kind: RaterRating
+  properties:
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: modified_at
+
+- kind: RaterRating
+  properties:
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: modified_at

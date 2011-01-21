@@ -10,6 +10,9 @@ from model.comment import Comment
 from model.tags import SubTag
 import urllib2
 
+from pusher.pusher_janitor import generate_connection_handshake_request,\
+    push_rating
+
 tag_re = r'([^/]+)'
 tags_re = r'(.+)'
 
@@ -49,8 +52,9 @@ class CreateRaterRatingAPIHandler(webapp.RequestHandler):
         else:
             comment_text = ""
         rater_rating = RaterRating.create(int(rating), comment_text, tags.split('/'))
+        push_rating(rater_rating, comment_text)
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.out.write(simplejson.dumps({'rater_id': rater_rating.rater_id}))
+        self.response.out.write(simplejson.dumps({'rater_id': rater_rating.rater_id, 'result': True}))
 
 class UpdateRaterRatingAPIHandler(webapp.RequestHandler):
     def post(self, rater, rating, comment_text):
@@ -60,6 +64,7 @@ class UpdateRaterRatingAPIHandler(webapp.RequestHandler):
             comment_text = ""
         rater_rating = RaterRating.update(rater, int(rating), comment_text)
         if rater_rating is not None:
+            push_rating(rater_rating, comment_text)
             if comment_text != "":
                 Comment.create(comment_text, int(rating), rater_rating.tags)
             self.response.out.write(simplejson.dumps({'rater_id': rater_rating.rater_id, 'result': True}))
@@ -69,11 +74,7 @@ class UpdateRaterRatingAPIHandler(webapp.RequestHandler):
 
 class GetLatestRatingAPIHandler(webapp.RequestHandler):
     def get(self, days, tags):
-        ratings = RaterRating.ratings_for_tags(int(days), tags.split('/'))
-        average = 0
-        if ratings:
-            average = float(sum(ratings)) / len(ratings)
-        self.response.out.write(simplejson.dumps({'average_rating': average}))
+        self.response.out.write(simplejson.dumps({'average_rating': RaterRating.average_rating_for_tags(tags.split('/'), days)}))
 
 DEFAULT_COMMENTS_LIMIT=20
 class GetLatestCommentsAPIHandler(webapp.RequestHandler):
@@ -81,6 +82,10 @@ class GetLatestCommentsAPIHandler(webapp.RequestHandler):
         comments = Comment.comments_for_tags(tags.split('/'), int(rating_threshold), DEFAULT_COMMENTS_LIMIT)
         self.response.out.write(simplejson.dumps({'comments': comments}))
 
+class GetChannelCredentialsAPIHandler(webapp.RequestHandler):
+    def get(self, rater_id, tags):
+        self.response.out.write(simplejson.dumps(generate_connection_handshake_request(rater_id, tags.split('/'))))
+        
 def get_sub_tags(tags):
     return SubTag.sub_tags(tags.split('/'))
     
@@ -108,7 +113,8 @@ application = webapp.WSGIApplication([
                                       ('/api/rater_rating/create/([1-9]|10)/([^/]*)/%s' % tags_re, CreateRaterRatingAPIHandler),
                                       ('/api/rater_rating/update/([0-9a-f]+)/([1-9]|10)/(.*)', UpdateRaterRatingAPIHandler),
                                       ('/api/comments/latest/([1-9]|10)/%s' % tags_re, GetLatestCommentsAPIHandler),
-                                      ('/api/rating/latest/(\d+)/%s' % tags_re, GetLatestRatingAPIHandler)
+                                      ('/api/rating/latest/(\d+)/%s' % tags_re, GetLatestRatingAPIHandler),
+                                      ('/api/channel/credentials/([0-9a-f]+)/%s' % tags_re, GetChannelCredentialsAPIHandler)
                                       ], debug=True)
 
 def main():
