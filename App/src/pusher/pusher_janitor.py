@@ -15,7 +15,6 @@ from model.rating import RaterRating
 PRIVATE_CHANNEL_PREFIX = 'private_notification'
 
 def push_message(payload):
-
     form_fields = {
       "payload": dumps(payload),
     }
@@ -23,7 +22,9 @@ def push_message(payload):
     urlfetch.fetch(url=SERVER_URL,
                    payload=form_data,
                    method=urlfetch.POST,
-                   headers={'Content-Type': 'application/x-www-form-urlencoded'})
+                   headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                   deadline=30)
+    
     
 def push_rating(rater_rating, comment): 
     tags = rater_rating.tags

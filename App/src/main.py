@@ -44,15 +44,12 @@ class WebHandler(webapp.RequestHandler):
         if code == 404:
             self.Render("404.html", {})
             
-class CreateRaterRatingAPIHandler(webapp.RequestHandler):
-    def post(self, rating, comment_text, tags):
-        if comment_text:
-            comment_text = urllib2.unquote(comment_text)
-            Comment.create(comment_text, int(rating), tags.split('/'))
-        else:
-            comment_text = ""
-        rater_rating = RaterRating.create(int(rating), comment_text, tags.split('/'))
-        push_rating(rater_rating, comment_text)
+class InitRaterRatingAPIHandler(webapp.RequestHandler):
+    def post(self, rater, tags):
+        rater_rating = RaterRating.rating_for_rater(rater)
+        if rater_rating is None:
+            rater_rating = RaterRating.create(tags.split('/'))
+        #push_rating(rater_rating, "")
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write(simplejson.dumps({'rater_id': rater_rating.rater_id, 'result': True}))
 
@@ -60,6 +57,8 @@ class UpdateRaterRatingAPIHandler(webapp.RequestHandler):
     def post(self, rater, rating, comment_text):
         if comment_text:
             comment_text = urllib2.unquote(comment_text)
+            if type(comment_text) == type(""):
+                comment_text = comment_text.decode("utf-8")
         else:
             comment_text = ""
         rater_rating = RaterRating.update(rater, int(rating), comment_text)
@@ -110,7 +109,7 @@ class SubTagWebHandler(WebHandler):
 application = webapp.WSGIApplication([
                                       ('/sub_tags/%s' % (tags_re), SubTagWebHandler),
                                       ('/api/sub_tags/%s' % tags_re, ListSubTagsAPIHandler),
-                                      ('/api/rater_rating/create/([1-9]|10)/([^/]*)/%s' % tags_re, CreateRaterRatingAPIHandler),
+                                      ('/api/rater_rating/init/([0-9a-f]+)?/%s' % tags_re, InitRaterRatingAPIHandler),
                                       ('/api/rater_rating/update/([0-9a-f]+)/([1-9]|10)/(.*)', UpdateRaterRatingAPIHandler),
                                       ('/api/comments/latest/([1-9]|10)/%s' % tags_re, GetLatestCommentsAPIHandler),
                                       ('/api/rating/latest/(\d+)/%s' % tags_re, GetLatestRatingAPIHandler),

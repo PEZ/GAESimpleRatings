@@ -15,6 +15,33 @@ indexes:
   - name: tags
   - name: rating
 
+- kind: Comment
+  properties:
+  - name: tags
+  - name: tags
+  - name: rating
+
+- kind: RaterRating
+  properties:
+  - name: activated
+  - name: tags
+  - name: modified_at
+
+- kind: RaterRating
+  properties:
+  - name: activated
+  - name: tags
+  - name: tags
+  - name: modified_at
+
+- kind: RaterRating
+  properties:
+  - name: activated
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: modified_at
+
 - kind: RaterRating
   properties:
   - name: tags
@@ -28,42 +55,6 @@ indexes:
 
 - kind: RaterRating
   properties:
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: modified_at
-
-- kind: RaterRating
-  properties:
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: modified_at
-
-- kind: RaterRating
-  properties:
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
-  - name: tags
   - name: tags
   - name: tags
   - name: tags
