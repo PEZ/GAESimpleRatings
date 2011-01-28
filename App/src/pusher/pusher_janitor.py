@@ -26,16 +26,17 @@ def push_message(payload):
                    deadline=30)
     
     
-def push_rating(rater_rating, comment): 
+def make_push_rating_message(rater_rating, comment): 
     tags = rater_rating.tags
     payloads = []
     for path in [tags[:i] for i in range(1, len(tags)+1)]:
-        channelName = tags_to_channel_name(path)
-        message = {'rating': rater_rating.rating,
+        message = {'channelName':tags_to_channel_name(path),
+                   'message':{'rating': rater_rating.rating,
                          'comment': comment,
-                         'rating_average': RaterRating.average_rating_for_tags(path)}
-        payloads.append(generate_push_message(channelName, message))
-    push_message(payloads)
+                         'subtag' : tags[-1],
+                         'rating_average': RaterRating.average_rating_for_tags(path)}}
+        payloads.append(message)
+    return payloads
 
 def tags_to_channel_name(tags):
     return '/'.join(tags)

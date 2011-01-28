@@ -17,7 +17,7 @@ class RaterRating(db.Model):
     modified_at  = db.DateTimeProperty(auto_now=True)
     rater_id     = db.StringProperty(required=True)
     rating       = db.RatingProperty(required=True)
-    comment      = db.StringProperty(required=False)
+    comment      = db.TextProperty(required=False)
     tags         = db.StringListProperty(default=[])
     activated    = db.BooleanProperty(default=False)
     
