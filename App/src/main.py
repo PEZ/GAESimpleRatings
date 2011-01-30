@@ -8,6 +8,7 @@ import datetime
 from model.rating import RaterRating
 from model.comment import Comment
 from model.tags import SubTag
+from model.slogan import Slogan
 import urllib2
 
 from pusher.pusher_janitor import generate_connection_handshake_request,\
@@ -108,9 +109,37 @@ class SubTagWebHandler(WebHandler):
         SubTag.create(tag=self.request.get('tag'), parent_tags=tags.split('/'))
         self.get(tags)
 
+def get_slogans(tags):
+    return Slogan.slogans_for_tags(tags.split('/'), limit=20)
+
+class ListSlogansAPIHandler(webapp.RequestHandler):
+    def get(self, tags):
+        self.response.out.write(simplejson.dumps([{'text': slogan.text} for slogan in get_slogans(tags)]))
+
+class SlogansWebHandler(WebHandler):
+    @admin_required
+    def get(self, tags):
+        template_values = {
+            'tags': tags,
+            'slogans':  get_slogans(tags)
+        }
+        self.Render("slogans.html", template_values)
+
+    @admin_required
+    def post(self, tags):
+        delete_key = self.request.get('delete');
+        if delete_key:
+            slogan = Slogan.get(delete_key)
+            slogan.delete();
+        else:
+            Slogan.create(text=self.request.get('new'), tags=tags.split('/'))
+        self.get(tags)
+        
 application = webapp.WSGIApplication([
                                       ('/sub_tags/%s' % (tags_re), SubTagWebHandler),
+                                      ('/slogans/%s' % (tags_re), SlogansWebHandler),
                                       ('/api/sub_tags/%s' % tags_re, ListSubTagsAPIHandler),
+                                      ('/api/slogans/%s' % tags_re, ListSlogansAPIHandler),
                                       ('/api/rater_rating/init/([0-9a-f]+)?/%s' % tags_re, InitRaterRatingAPIHandler),
                                       ('/api/rater_rating/update/([0-9a-f]+)/([1-9]|10)/(.*)', UpdateRaterRatingAPIHandler),
                                       ('/api/comments/latest/%s' % tags_re, GetLatestCommentsAPIHandler),

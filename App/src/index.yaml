@@ -72,3 +72,26 @@ indexes:
   - name: tags
   - name: tags
   - name: modified_at
+
+- kind: Slogan
+  properties:
+  - name: tags
+  - name: created_at
+    direction: desc
+
+- kind: Slogan
+  properties:
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: tags
+  - name: created_at
+    direction: desc

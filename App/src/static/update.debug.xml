@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
+<version>v0.1.1b</version>
+<url>http://localhost:8080/static/Winometer.air</url>
+<description><![CDATA[
+v0.1.1b
+ * Update framework added.
+]]></description>
+</update>

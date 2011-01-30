@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
+<version>v0.1.1a</version>
+<url>http://winning-culture.appspot.com/static/Winometer.air</url>
+<description><![CDATA[
+v0.1.1a
+ * Signatures added to the messages.
+ * Trying without the alert box for high win updates.
+ * Full messages always shown.
+ * URL:s in messages are clickable.
+ * ... and some more fixes, forgot what they were. =)
+]]></description>
+</update>

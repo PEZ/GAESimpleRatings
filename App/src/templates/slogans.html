@@ -1,0 +1,11 @@
+  <h2>Taglines for: {{tags|escape}}</h2>
+  <form method="post">
+	  <ul>
+	  {% for slogan in slogans %}
+		<li><button type="submit" name="delete" value="{{slogan.key}}">X</button> {{slogan.text|escape}}</li>
+	  {% endfor %}
+	  </ul>
+	  <input type="text" name="new" placeholder="New tagline" />
+	  <input type="submit" value="Create" />
+  </form>
+  
