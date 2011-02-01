@@ -39,5 +39,3 @@ Backup[ ]of[ ]*.key/
 Backup[ ]of[ ]*.numbers/
 
 #app.yaml for this project needs "manual" tracking
-app.yaml
-config.py
