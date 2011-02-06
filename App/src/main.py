@@ -18,15 +18,9 @@ import urllib
 tag_re = r'([^/]+)'
 tags_re = r'(.+)'
 
-now = datetime.datetime.now()
+CEO_EMAIL_ADDRESSES = ["pelle.hjortblad@gmail.com", "pelle.hjortblad@projectplace.com"]
 
-def admin_required(func):
-    def wrapper(self, *args, **kw):
-        if not users.is_current_user_admin():
-            self.redirect(users.create_login_url(self.request.uri))
-        else:
-            func(self, *args, **kw)
-    return wrapper
+now = datetime.datetime.now()
 
 class WebHandler(webapp.RequestHandler):
 
@@ -96,7 +90,6 @@ class ListSubTagsAPIHandler(webapp.RequestHandler):
         self.response.out.write(simplejson.dumps({'tags': [tag.tag for tag in get_sub_tags(tags)]}))
 
 class SubTagWebHandler(WebHandler):
-    @admin_required
     def get(self, tags):
         template_values = {
             'tags':  tags,
@@ -104,10 +97,10 @@ class SubTagWebHandler(WebHandler):
         }
         self.Render("subtags.html", template_values)
 
-    @admin_required
     def post(self, tags):
         SubTag.create(tag=self.request.get('tag'), parent_tags=tags.split('/'))
         self.get(tags)
+
 
 def get_slogans(tags):
     return Slogan.slogans_for_tags(tags.split('/'), limit=20)
@@ -116,8 +109,20 @@ class ListSlogansAPIHandler(webapp.RequestHandler):
     def get(self, tags):
         self.response.out.write(simplejson.dumps([{'text': slogan.text} for slogan in get_slogans(tags)]))
 
+def admin_or_ceo_required(handler_method):
+    """Assumes app.yaml enforces login"""
+    def check_login(self, *args, **kw):
+        user = users.get_current_user()
+        if users.is_current_user_admin() or user.email() in CEO_EMAIL_ADDRESSES:
+            handler_method(self, *args, **kw)
+        else:
+            self.error(403)
+            self.Render("403.html", {'sign_in_url': users.create_login_url(self.request.uri)});
+            return
+    return check_login
+
 class SlogansWebHandler(WebHandler):
-    @admin_required
+    @admin_or_ceo_required
     def get(self, tags):
         template_values = {
             'tags': tags,
@@ -125,7 +130,7 @@ class SlogansWebHandler(WebHandler):
         }
         self.Render("slogans.html", template_values)
 
-    @admin_required
+    @admin_or_ceo_required
     def post(self, tags):
         delete_key = self.request.get('delete');
         if delete_key:
@@ -136,7 +141,7 @@ class SlogansWebHandler(WebHandler):
         self.get(tags)
         
 application = webapp.WSGIApplication([
-                                      ('/sub_tags/%s' % (tags_re), SubTagWebHandler),
+                                      ('/subtags/%s' % (tags_re), SubTagWebHandler),
                                       ('/slogans/%s' % (tags_re), SlogansWebHandler),
                                       ('/api/sub_tags/%s' % tags_re, ListSubTagsAPIHandler),
                                       ('/api/slogans/%s' % tags_re, ListSlogansAPIHandler),

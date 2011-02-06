@@ -8,8 +8,17 @@ handlers:
   static_dir: static
   #secure: always
 
-- url: /.*
+- url: /slogans/.*
+  script: main.py
+  login: required
+
+- url: /subtags/.*
+  script: main.py
+  login: admin
+
+- url: /api/.*
   script: main.py
 
 builtins:
 - datastore_admin: on
+- appstats: on

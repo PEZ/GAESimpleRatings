@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/1.0">
-<version>v0.1.1c</version>
+<version>v0.1.1f</version>
 <url>http://dl.dropbox.com/u/3259215/Projects/Winometer.air</url>
 <description><![CDATA[
- * Tweaked the red-yellow-green threholds.
- * The comments refreshes if the computer loses and regains the network connection.
- * Attempt at stabilizing the server push connections.
+* Faster rotating taglines
+* Minor visual tweaks
 ]]></description>
 </update>
